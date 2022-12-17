@@ -99,9 +99,9 @@ fun BottomToolbar(screen: MutableState<BottomNav>) {
                         screen.value = nav
                     },
                 colorFilter = if (screen.value == nav) {
-                    ColorFilter.tint(Purple40)
+                    ColorFilter.tint(accentColor)
                 } else {
-                    ColorFilter.tint(PurpleGrey40.copy(alpha = 0.5f))
+                    ColorFilter.tint(Color.LightGray)
                 }
             )
         }

@@ -2,17 +2,13 @@ package com.example.jetpackcomposeanimationplayground.ui
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -20,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -29,57 +26,101 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetpackcomposeanimationplayground.R
-import com.example.jetpackcomposeanimationplayground.ui.theme.Purple80
+import com.example.jetpackcomposeanimationplayground.ui.theme.accentColor
 import com.example.jetpackcomposeanimationplayground.ui.theme.textColor
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HomeComponent() {
-    val pagerState = rememberPagerState()
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        HorizontalPager(
-            count = CarouselDataModel.listOfShoes.size,
-            contentPadding = PaddingValues(start = 50.dp, end = 70.dp),
-            state = pagerState
-        ) { page ->
-            val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
-            ShoeItem(shoe = CarouselDataModel.listOfShoes[page], pageOffset)
-        }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp, bottom = 16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Favorite",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center,
-                color = textColor
-            )
-            Image(
-                painter = painterResource(id = R.drawable.ic_right_arrow),
-                contentDescription = "more"
-            )
-        }
-        TrendingShoes()
+        HomeTopComponent()
+        HomeMiddleComponent()
+        HomeBottomComponent()
     }
 }
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TrendingShoes() {
+fun HomeTopComponent() {
+    val pagerState = rememberPagerState()
+    val selectedCategory = remember { mutableStateOf(CarouselDataModel.categories.size - 1) }
+    val rememberScope = rememberCoroutineScope()
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.width(64.dp),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CarouselDataModel.categories.forEachIndexed { index, item ->
+                Text(
+                    text = item,
+                    modifier = Modifier
+                        .height(90.dp)
+                        .graphicsLayer {
+                            rotationZ = -90f
+                            translationX = 100f
+                        }
+                        .clickable {
+                            selectedCategory.value = index
+                            rememberScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = if (selectedCategory.value == index) textColor else Color.LightGray,
+                    maxLines = 1,
+                )
+            }
+        }
+        HorizontalPager(
+            count = CarouselDataModel.listOfShoes.size,
+            contentPadding = PaddingValues(end = 70.dp),
+            state = pagerState
+        ) { page ->
+            val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+            ShoeItem(shoe = CarouselDataModel.listOfShoes[page], pageOffset)
+        }
+    }
+}
+
+@Composable
+fun HomeMiddleComponent() {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Favorite",
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+            color = textColor
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_right_arrow),
+            contentDescription = "more"
+        )
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun HomeBottomComponent() {
     LazyRow(state = rememberLazyListState()) {
         items(TrendingProduct.list.size) { index ->
             TrendingProductItem(TrendingProduct.list[index])
@@ -112,19 +153,24 @@ fun TrendingProductItem(product: TrendingProduct) {
                     modifier = Modifier.padding(8.dp)
                 )
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
                     text = product.name,
                     fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.labelLarge,
                     textAlign = TextAlign.Center,
                     color = textColor
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-                Text(text = product.price, color = textColor)
+                Text(
+                    text = product.price,
+                    color = textColor,
+                    fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.labelSmall
+                )
             }
 
             Image(
@@ -144,7 +190,7 @@ fun TrendingProductItem(product: TrendingProduct) {
                     .align(Alignment.TopStart)
                     .offset(x = 4.dp, y = (-4).dp)
                     .clip(RoundedCornerShape(8.dp)),
-                colorFilter = ColorFilter.tint(Color(0xFFeb4658)),
+                colorFilter = ColorFilter.tint(accentColor),
                 contentScale = ContentScale.Crop
             )
         }
@@ -255,7 +301,7 @@ fun ShoeItem(shoe: CarouselDataModel, pageOffset: Float) {
 
                 Image(
                     modifier = Modifier.size(24.dp),
-                    painter = painterResource(id = R.drawable.ic_search),
+                    painter = painterResource(id = R.drawable.ic_heart),
                     contentDescription = "like",
                     colorFilter = ColorFilter.tint(Color.White),
                 )

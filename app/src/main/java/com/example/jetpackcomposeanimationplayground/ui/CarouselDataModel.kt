@@ -50,6 +50,8 @@ data class CarouselDataModel(
                 )
             )
         }
+
+        val categories = listOf("New", "Featured", "Trending")
     }
 
 }
