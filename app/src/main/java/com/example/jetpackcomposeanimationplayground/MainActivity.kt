@@ -84,7 +84,7 @@ fun BottomToolbar(screen: MutableState<BottomNav>) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         BottomNav.values().forEach { nav ->
@@ -93,7 +93,7 @@ fun BottomToolbar(screen: MutableState<BottomNav>) {
                 contentDescription = "search",
                 modifier = Modifier
                     .padding(4.dp)
-                    .size(40.dp)
+                    .size(36.dp)
                     .padding(6.dp)
                     .clickable {
                         screen.value = nav
@@ -119,7 +119,7 @@ fun HomeToolbar() {
         Text(
             text = "Discover",
             fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
+            fontSize = 26.sp,
             color = textColor
         )
 
@@ -129,20 +129,20 @@ fun HomeToolbar() {
             painter = painterResource(id = R.drawable.ic_search),
             contentDescription = "search",
             modifier = Modifier
-                .padding(4.dp)
-                .size(36.dp)
-                .background(color = Color.Gray.copy(alpha = .2f), shape = CircleShape)
                 .padding(6.dp)
+                .size(32.dp)
+                .background(color = Color.LightGray.copy(alpha = .2f), shape = CircleShape)
+                .padding(8.dp)
         )
 
         Image(
             painter = painterResource(id = R.drawable.ic_notification),
             contentDescription = "search",
             modifier = Modifier
-                .padding(4.dp)
-                .size(36.dp)
-                .background(color = Color.Gray.copy(alpha = .2f), shape = CircleShape)
                 .padding(6.dp)
+                .size(32.dp)
+                .background(color = Color.LightGray.copy(alpha = .2f), shape = CircleShape)
+                .padding(8.dp)
         )
 
     }
