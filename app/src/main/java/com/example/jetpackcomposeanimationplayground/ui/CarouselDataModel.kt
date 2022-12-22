@@ -8,10 +8,11 @@ data class CarouselDataModel(
     val title: String,
     val description: String,
     val price: String,
-    val color: Color
+    val color: Color,
+    val aboutProduct: String = "Meet the $description TW. Inspired by the treasured franchise that brought $description cushioning to the world and laid the foundation for the aesthetic."
 ) {
-
     companion object {
+
         val listOfShoes = mutableListOf<CarouselDataModel>().apply {
             add(
                 CarouselDataModel(

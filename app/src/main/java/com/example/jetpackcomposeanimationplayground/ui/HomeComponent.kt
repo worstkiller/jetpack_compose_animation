@@ -16,7 +16,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -37,13 +36,13 @@ import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HomeComponent() {
+fun HomeComponent(viewModel: MainViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        HomeTopComponent()
+        HomeTopComponent(viewModel)
         HomeMiddleComponent()
         HomeBottomComponent()
     }
@@ -51,7 +50,7 @@ fun HomeComponent() {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HomeTopComponent() {
+fun HomeTopComponent(viewModel: MainViewModel) {
     val pagerState = rememberPagerState()
     val selectedCategory = remember { mutableStateOf(CarouselDataModel.categories.size - 1) }
     val rememberScope = rememberCoroutineScope()
@@ -90,7 +89,7 @@ fun HomeTopComponent() {
             state = pagerState
         ) { page ->
             val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
-            ShoeItem(shoe = CarouselDataModel.listOfShoes[page], pageOffset)
+            ShoeItem(shoe = CarouselDataModel.listOfShoes[page], pageOffset, viewModel)
         }
     }
 }
@@ -198,7 +197,7 @@ fun TrendingProductItem(product: TrendingProduct) {
 }
 
 @Composable
-fun ShoeItem(shoe: CarouselDataModel, pageOffset: Float) {
+fun ShoeItem(shoe: CarouselDataModel, pageOffset: Float, viewModel: MainViewModel) {
     val scale = Utils.lerp(
         start = 0.5f,
         stop = 1f,
@@ -227,22 +226,22 @@ fun ShoeItem(shoe: CarouselDataModel, pageOffset: Float) {
     val boxAngle: Float by animateFloatAsState(
         targetValue = rotateY,
         // Configure the animation duration and easing.
-        animationSpec = tween(durationMillis = 300, easing = Utils.EaseOutQuart)
+        animationSpec = tween(durationMillis = 600, easing = Utils.EaseOutQuart)
     )
     val boxScaleX: Float by animateFloatAsState(
         targetValue = scaleXBox,
         // Configure the animation duration and easing.
-        animationSpec = tween(durationMillis = 400, easing = Utils.EaseOutQuart)
+        animationSpec = tween(durationMillis = 800, easing = Utils.EaseOutQuart)
     )
     val boxScaleY: Float by animateFloatAsState(
         targetValue = scaleYBox,
         // Configure the animation duration and easing.
-        animationSpec = tween(durationMillis = 400, easing = Utils.EaseOutQuart)
+        animationSpec = tween(durationMillis = 800, easing = Utils.EaseOutQuart)
     )
     val imageAngle: Float by animateFloatAsState(
         targetValue = angle,
         // Configure the animation duration and easing.
-        animationSpec = tween(durationMillis = 300, easing = Utils.EaseOutQuart)
+        animationSpec = tween(durationMillis = 600, easing = Utils.EaseOutQuart)
     )
     val visibility = Utils.lerp(
         start = 0f,
@@ -250,7 +249,9 @@ fun ShoeItem(shoe: CarouselDataModel, pageOffset: Float) {
         fraction = 1f - pageOffset.coerceIn(0f, 1f)
     )
 
-    Box {
+    Box(modifier = Modifier.clickable {
+        viewModel.screenState.value = MainViewModel.UiState.Details(shoe)
+    }) {
         Box(
             modifier = Modifier
                 .graphicsLayer {
@@ -347,5 +348,5 @@ fun ShoeItem(shoe: CarouselDataModel, pageOffset: Float) {
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun Preview_HomeComponent() {
-    HomeComponent()
+    HomeComponent(MainViewModel())
 }

@@ -3,18 +3,19 @@ package com.example.jetpackcomposeanimationplayground
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,19 +27,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetpackcomposeanimationplayground.ui.BottomNav
+import com.example.jetpackcomposeanimationplayground.ui.DetailComponent
 import com.example.jetpackcomposeanimationplayground.ui.HomeComponent
-import com.example.jetpackcomposeanimationplayground.ui.theme.*
+import com.example.jetpackcomposeanimationplayground.ui.MainViewModel
+import com.example.jetpackcomposeanimationplayground.ui.theme.JetpackComposeAnimationPlaygroundTheme
+import com.example.jetpackcomposeanimationplayground.ui.theme.accentColor
+import com.example.jetpackcomposeanimationplayground.ui.theme.textColor
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
+
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             JetpackComposeAnimationPlaygroundTheme {
+                val screenState by remember { viewModel.screenState }
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    DashboardComponent()
+                    Crossfade(targetState = screenState) { state ->
+                        when (state) {
+                            is MainViewModel.UiState.Home -> {
+                                DashboardComponent(viewModel)
+                            }
+                            is MainViewModel.UiState.Details -> {
+                                DetailComponent(state.carouselDataModel, viewModel)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -46,7 +65,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun DashboardComponent() {
+fun DashboardComponent(viewModel: MainViewModel) {
     val screen = remember { mutableStateOf(BottomNav.Home) }
     Column(
         modifier = Modifier.fillMaxSize()
@@ -60,7 +79,7 @@ fun DashboardComponent() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (screen.value) {
-                BottomNav.Home -> HomeComponent()
+                BottomNav.Home -> HomeComponent(viewModel)
                 else -> {
                     Text(
                         text = "Coming Soon",
@@ -152,6 +171,6 @@ fun HomeToolbar() {
 @Composable
 fun DefaultPreview() {
     JetpackComposeAnimationPlaygroundTheme {
-        DashboardComponent()
+        DashboardComponent(MainViewModel())
     }
 }
