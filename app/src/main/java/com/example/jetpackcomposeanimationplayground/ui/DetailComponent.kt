@@ -80,7 +80,7 @@ fun DetailComponent(
         }
     }
 
-    val buttonSize by transition.animateDp(
+    val circleSize by transition.animateFloat(
         transitionSpec = {
             if (DetailState.COLLAPSED isTransitioningTo DetailState.EXPANDED) {
                 spring(stiffness = 100f, dampingRatio = 0.5f)
@@ -91,9 +91,9 @@ fun DetailComponent(
         label = ""
     ) {
         if (it == DetailState.COLLAPSED) {
-            0.dp
+            0f
         } else {
-            200.dp
+            1.6f
         }
     }
 
@@ -165,7 +165,7 @@ fun DetailComponent(
                     .graphicsLayer {
                         translationX = 180f
                         translationY = -350f
-                        scaleX = 1.6f
+                        scaleX = circleSize
                     }
                     .background(shape = CircleShape, color = color))
 
