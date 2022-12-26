@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -13,7 +14,7 @@ class MainViewModel : ViewModel() {
 
     val buttonState = mutableStateOf(ButtonState.DEFAULT)
 
-    val cartFlow = MutableStateFlow(false)
+    val cartFlow = MutableSharedFlow<Boolean>()
 
     sealed class UiState {
         class Details(val carouselDataModel: CarouselDataModel) : UiState()
@@ -26,12 +27,14 @@ class MainViewModel : ViewModel() {
 
     fun changeButtonState() {
         if (buttonState.value == ButtonState.LOADED) {
-            cartFlow.tryEmit(true)
+            viewModelScope.launch {
+                cartFlow.emit(true)
+            }
             return
         }
         viewModelScope.launch {
             buttonState.value = ButtonState.LOADING
-            delay(3000)
+            delay(1500)
             buttonState.value = ButtonState.LOADED
         }
     }

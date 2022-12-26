@@ -7,6 +7,11 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,9 +20,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -31,13 +37,20 @@ import com.example.jetpackcomposeanimationplayground.R
 import com.example.jetpackcomposeanimationplayground.ui.theme.accentColor
 import com.example.jetpackcomposeanimationplayground.ui.theme.textColor
 
+enum class CartState {
+    Empty,
+    NotEmpty
+}
+
 class CartActivity : ComponentActivity() {
+
+    private val viewModel: CartViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Surface(color = MaterialTheme.colorScheme.surface) {
-                CartComponent()
+                CartComponent(viewModel)
             }
         }
     }
@@ -49,8 +62,8 @@ class CartActivity : ComponentActivity() {
 }
 
 @Composable
-fun CartComponent() {
-
+fun CartComponent(viewModel: CartViewModel) {
+    val listItems by remember { viewModel.cartItems }
     val context = LocalContext.current
     Box {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -95,8 +108,12 @@ fun CartComponent() {
             )
 
             LazyColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                items(CartDataModel.list) {
-                    CartItem(it)
+                items(listItems) { item ->
+                    CartItem(item) {
+                        Toast.makeText(context, "Item removed ${it.name}", Toast.LENGTH_SHORT)
+                            .show()
+                        viewModel.removeProduct(it)
+                    }
                 }
                 item { Spacer(modifier = Modifier.height(100.dp)) }
             }
@@ -161,10 +178,29 @@ fun CartComponent() {
 }
 
 @Composable
-fun CartItem(cartDataModel: CartDataModel) {
+fun CartItem(cartDataModel: CartDataModel, onRemove: (CartDataModel) -> Unit) {
+    var state by remember { mutableStateOf(CartState.NotEmpty) }
+    val itemCount = remember { mutableStateOf(1) }
+    val transition = updateTransition(state, label = "")
+
+    val rowSize by transition.animateFloat(
+        transitionSpec = {
+            if (CartState.NotEmpty isTransitioningTo CartState.Empty) {
+                spring(stiffness = 100f, dampingRatio = 0.5f)
+            } else {
+                tween(durationMillis = 500)
+            }
+        },
+        label = ""
+    ) {
+        if (it == CartState.NotEmpty) 1f else 0f
+    }
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .alpha(rowSize)
             .padding(start = 16.dp, end = 8.dp, top = 8.dp)
     ) {
 
@@ -201,7 +237,7 @@ fun CartItem(cartDataModel: CartDataModel) {
                 Text(
                     text = cartDataModel.price,
                     color = textColor,
-                    fontSize = 24.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -219,11 +255,18 @@ fun CartItem(cartDataModel: CartDataModel) {
                                 color = Color.LightGray.copy(alpha = .2f),
                                 shape = RoundedCornerShape(2.dp)
                             )
-                            .padding(4.dp),
+                            .padding(4.dp)
+                            .clickable {
+                                itemCount.value--
+                                if (itemCount.value == 0) {
+                                    state = CartState.Empty
+                                    onRemove(cartDataModel)
+                                }
+                            },
                         colorFilter = ColorFilter.tint(textColor.copy(alpha = .8f))
                     )
                     Text(
-                        text = "1",
+                        text = "${itemCount.value}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp)
@@ -238,7 +281,8 @@ fun CartItem(cartDataModel: CartDataModel) {
                                 color = Color.LightGray.copy(alpha = .2f),
                                 shape = RoundedCornerShape(2.dp)
                             )
-                            .padding(4.dp),
+                            .padding(4.dp)
+                            .clickable { itemCount.value++ },
                         colorFilter = ColorFilter.tint(textColor.copy(alpha = .8f))
                     )
                 }
@@ -250,7 +294,7 @@ fun CartItem(cartDataModel: CartDataModel) {
             modifier = Modifier
                 .size(150.dp)
                 .rotate(20f)
-                .offset(x = (-25).dp, y = (-15).dp)
+                .offset(x = (-25).dp, y = (-5).dp)
         )
     }
 }
@@ -258,5 +302,5 @@ fun CartItem(cartDataModel: CartDataModel) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun Preview_CartActivity() {
-    CartComponent()
+    CartComponent(CartViewModel())
 }
