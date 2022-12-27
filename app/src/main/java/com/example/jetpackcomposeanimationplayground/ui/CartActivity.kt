@@ -7,11 +7,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +27,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,13 +42,11 @@ enum class CartState {
 
 class CartActivity : ComponentActivity() {
 
-    private val viewModel: CartViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Surface(color = MaterialTheme.colorScheme.surface) {
-                CartComponent(viewModel)
+                CartComponent()
             }
         }
     }
@@ -62,8 +58,8 @@ class CartActivity : ComponentActivity() {
 }
 
 @Composable
-fun CartComponent(viewModel: CartViewModel) {
-    val listItems by remember { viewModel.cartItems }
+fun CartComponent() {
+    val listItems = remember { mutableStateOf(CartDataModel.list) }
     val context = LocalContext.current
     Box {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -92,7 +88,7 @@ fun CartComponent(viewModel: CartViewModel) {
                     color = textColor
                 )
                 Text(
-                    text = "Total 3 items",
+                    text = "Total ${listItems.value.size} items",
                     color = textColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
@@ -108,16 +104,29 @@ fun CartComponent(viewModel: CartViewModel) {
             )
 
             LazyColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                items(listItems) { item ->
+                items(listItems.value) { item ->
                     CartItem(item) {
+                        listItems.value = listItems.value.filter { it.id != item.id }
                         Toast.makeText(context, "Item removed ${it.name}", Toast.LENGTH_SHORT)
                             .show()
-                        viewModel.removeProduct(it)
                     }
                 }
                 item { Spacer(modifier = Modifier.height(100.dp)) }
             }
         }
+
+        Text(
+            text = "No Items in your cart!",
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .align(Alignment.Center)
+                .alpha(if (listItems.value.isEmpty()) 1f else 0f),
+            color = textColor,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
 
         Column(
             modifier = Modifier
@@ -150,7 +159,7 @@ fun CartComponent(viewModel: CartViewModel) {
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "₹1234.00",
+                    text = "₹${listItems.value.sumOf { it.price }}",
                     color = textColor,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
@@ -179,28 +188,12 @@ fun CartComponent(viewModel: CartViewModel) {
 
 @Composable
 fun CartItem(cartDataModel: CartDataModel, onRemove: (CartDataModel) -> Unit) {
-    var state by remember { mutableStateOf(CartState.NotEmpty) }
     val itemCount = remember { mutableStateOf(1) }
-    val transition = updateTransition(state, label = "")
-
-    val rowSize by transition.animateFloat(
-        transitionSpec = {
-            if (CartState.NotEmpty isTransitioningTo CartState.Empty) {
-                spring(stiffness = 100f, dampingRatio = 0.5f)
-            } else {
-                tween(durationMillis = 500)
-            }
-        },
-        label = ""
-    ) {
-        if (it == CartState.NotEmpty) 1f else 0f
-    }
-
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .alpha(rowSize)
+            .animateContentSize()
             .padding(start = 16.dp, end = 8.dp, top = 8.dp)
     ) {
 
@@ -235,7 +228,7 @@ fun CartItem(cartDataModel: CartDataModel, onRemove: (CartDataModel) -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = cartDataModel.price,
+                    text = "₹${cartDataModel.price}",
                     color = textColor,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
@@ -258,15 +251,14 @@ fun CartItem(cartDataModel: CartDataModel, onRemove: (CartDataModel) -> Unit) {
                             .padding(4.dp)
                             .clickable {
                                 itemCount.value--
-                                if (itemCount.value == 0) {
-                                    state = CartState.Empty
+                                if (itemCount.value <= 0) {
                                     onRemove(cartDataModel)
                                 }
                             },
                         colorFilter = ColorFilter.tint(textColor.copy(alpha = .8f))
                     )
                     Text(
-                        text = "${itemCount.value}",
+                        text = "${cartDataModel.quantity}",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp)
@@ -302,5 +294,5 @@ fun CartItem(cartDataModel: CartDataModel, onRemove: (CartDataModel) -> Unit) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun Preview_CartActivity() {
-    CartComponent(CartViewModel())
+    CartComponent()
 }
