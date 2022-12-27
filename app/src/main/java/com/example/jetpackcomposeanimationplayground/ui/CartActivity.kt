@@ -192,6 +192,7 @@ fun CartItem(cartDataModel: CartDataModel, onRemove: (CartDataModel) -> Unit) {
 
     Box(
         modifier = Modifier
+            .padding(start = 10.dp)
             .fillMaxWidth()
             .animateContentSize()
             .padding(start = 16.dp, end = 8.dp, top = 8.dp)
@@ -286,7 +287,7 @@ fun CartItem(cartDataModel: CartDataModel, onRemove: (CartDataModel) -> Unit) {
             modifier = Modifier
                 .size(150.dp)
                 .rotate(20f)
-                .offset(x = (-25).dp, y = (-5).dp)
+                .offset(x = (-20).dp, y = (-5).dp)
         )
     }
 }

@@ -50,6 +50,24 @@ data class CarouselDataModel(
                     color = Color(0xFF45bfff)
                 )
             )
+            add(
+                CarouselDataModel(
+                    resId = R.drawable.under_armour_105,
+                    title = "Under Armour",
+                    description = "Hovr 1000",
+                    price = "₹ 25,300",
+                    color = Color(0xFFAFCA71)
+                )
+            )
+            add(
+                CarouselDataModel(
+                    resId = R.drawable.adidas_s100,
+                    title = "Adidas",
+                    description = "Adidas s100",
+                    price = "₹ 12,000",
+                    color = Color(0xFFBBA45C)
+                )
+            )
         }
 
         val categories = listOf("New", "Featured", "Trending")
