@@ -10,6 +10,10 @@ Will be adding more in future with difference use cases.
 |<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_101.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_102.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_106.png"/>|
 |<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_104.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_105.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_103.png"/>|
 
+## Video
+[![Jetpack Compose Animation](https://user-images.githubusercontent.com/10533214/209778716-304f993a-6ed8-470f-8021-8df03ef526a9.png)](https://www.youtube.com/watch?v=DzO8KQGDmf8&ab_channel=vikaskumar "Jetpack Compose Animation")
+
+
 ## Prerequisites
 
 - Android Studio Electric Eel or higher
