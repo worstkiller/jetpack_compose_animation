@@ -1,5 +1,7 @@
 package com.example.jetpackcomposeanimationplayground.ui
 
+import android.app.Activity
+import android.content.res.Resources.Theme
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -7,10 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +20,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetpackcomposeanimationplayground.R
+import com.example.jetpackcomposeanimationplayground.ui.theme.accentColor
 import com.example.jetpackcomposeanimationplayground.ui.theme.textColor
 
 enum class DetailState {
@@ -55,6 +57,8 @@ fun DetailComponent(
 
     LaunchedEffect(key1 = currentState) {
         currentState = DetailState.EXPANDED
+        val activity = context as Activity
+        activity.window.statusBarColor = carouselDataModel.color.toArgb()
 
         viewModel.cartFlow.collect {
             if (it) {
@@ -338,6 +342,7 @@ fun DetailComponent(
 
 @Composable
 fun DetailsToolbar(carouselDataModel: CarouselDataModel, viewModel: MainViewModel) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -351,6 +356,8 @@ fun DetailsToolbar(carouselDataModel: CarouselDataModel, viewModel: MainViewMode
                 .rotate(180f)
                 .size(24.dp)
                 .clickable {
+                    val activity = context as Activity
+                    activity.window.statusBarColor = accentColor.toArgb()
                     viewModel.onBackClick()
                 },
             colorFilter = ColorFilter.tint(Color.White)
