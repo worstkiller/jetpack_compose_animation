@@ -9,8 +9,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.vikas.composeapp.ui.dashboard.DashboardComponent
+import com.vikas.composeapp.ui.HomeComponent
 import com.vikas.composeapp.ui.theme.JetpackComposeAnimationPlaygroundTheme
+
+enum class MenuState {
+    EXPANDED, COLLAPSED
+}
 
 class MainActivity : ComponentActivity() {
 
@@ -22,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = colorScheme.background
                 ) {
-                    DashboardComponent()
+                    HomeComponent()
                 }
             }
         }
@@ -33,6 +37,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     JetpackComposeAnimationPlaygroundTheme {
-        DashboardComponent()
+        HomeComponent()
     }
 }

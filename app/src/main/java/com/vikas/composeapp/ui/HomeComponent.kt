@@ -1,0 +1,373 @@
+package com.vikas.composeapp.ui
+
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.*
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.vikas.composeapp.BuildConfig
+import com.vikas.composeapp.MenuState
+import com.vikas.composeapp.R
+import com.vikas.composeapp.ui.dashboard.DashboardComponent
+import com.vikas.composeapp.ui.dashboard.DashboardMenu
+import kotlin.math.roundToInt
+
+@Composable
+fun HomeComponent() {
+    var currentState by remember { mutableStateOf(MenuState.COLLAPSED) }
+    val updateAnim = updateTransition(currentState, label = "MenuState")
+    val scale = updateAnim.animateFloat(
+        transitionSpec = {
+            when {
+                MenuState.EXPANDED isTransitioningTo MenuState.COLLAPSED -> {
+                    tween(
+                        durationMillis = 300,
+                        easing = LinearOutSlowInEasing
+                    )
+                }
+                MenuState.COLLAPSED isTransitioningTo MenuState.EXPANDED -> {
+                    tween(
+                        durationMillis = 300,
+                        easing = LinearOutSlowInEasing
+                    )
+                }
+                else -> {
+                    snap()
+                }
+            }
+        }, label = ""
+    ) {
+        when (it) {
+            MenuState.EXPANDED -> 0.7f
+            MenuState.COLLAPSED -> 1f
+        }
+    }
+    val transitionOffset = updateAnim.animateOffset({
+        when {
+            MenuState.EXPANDED isTransitioningTo MenuState.COLLAPSED -> {
+                tween(
+                    durationMillis = 300,
+                    easing = LinearOutSlowInEasing
+                )
+            }
+            MenuState.COLLAPSED isTransitioningTo MenuState.EXPANDED -> {
+                tween(
+                    durationMillis = 300,
+                    easing = LinearOutSlowInEasing
+                )
+            }
+            else -> {
+                snap()
+            }
+        }
+    }, label = "") {
+        when (it) {
+            MenuState.EXPANDED -> Offset(750f, 60f)
+            MenuState.COLLAPSED -> Offset(0f, 0f)
+        }
+    }
+
+    val alphaMenu = updateAnim.animateFloat({
+        when {
+            MenuState.EXPANDED isTransitioningTo MenuState.COLLAPSED -> {
+                tween(durationMillis = 300)
+            }
+            MenuState.COLLAPSED isTransitioningTo MenuState.EXPANDED -> {
+                tween(durationMillis = 300)
+            }
+            else -> {
+                snap()
+            }
+        }
+    }, label = "") {
+        when (it) {
+            MenuState.EXPANDED -> 1f
+            MenuState.COLLAPSED -> 0.5f
+        }
+    }
+
+    val roundness = updateAnim.animateDp({
+        when {
+            MenuState.EXPANDED isTransitioningTo MenuState.COLLAPSED -> {
+                tween(durationMillis = 300)
+            }
+            MenuState.COLLAPSED isTransitioningTo MenuState.EXPANDED -> {
+                tween(durationMillis = 300)
+            }
+            else -> {
+                snap()
+            }
+        }
+    }, label = "") {
+        when (it) {
+            MenuState.EXPANDED -> 20.dp
+            MenuState.COLLAPSED -> 0.dp
+        }
+    }
+
+    val menuOffset = updateAnim.animateOffset({
+        when {
+            MenuState.EXPANDED isTransitioningTo MenuState.COLLAPSED -> {
+                tween(
+                    durationMillis = 300,
+                    easing = LinearOutSlowInEasing
+                )
+            }
+            MenuState.COLLAPSED isTransitioningTo MenuState.EXPANDED -> {
+                tween(
+                    durationMillis = 300,
+                    easing = LinearOutSlowInEasing
+                )
+            }
+            else -> {
+                snap()
+            }
+        }
+    }, label = "") {
+        when (it) {
+            MenuState.EXPANDED -> Offset(0f, 0f)
+            MenuState.COLLAPSED -> Offset(-100f, 0f)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF064789))
+    ) {
+
+        //side menu
+        MenuComponent(
+            Modifier
+                .offset {
+                    IntOffset(
+                        menuOffset.value.x.roundToInt(),
+                        menuOffset.value.y.roundToInt()
+                    )
+                }
+                .alpha(alphaMenu.value),
+        ) {
+            currentState = MenuState.COLLAPSED
+        }
+
+        // stack layer 0
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .scale(scale.value - 0.05f)
+                .offset {
+                    IntOffset(
+                        transitionOffset.value.x.toInt() - 50,
+                        transitionOffset.value.y.toInt()
+                    )
+                }
+                .background(Color(0xFFF3F6FA).copy(alpha = .95f), shape = RoundedCornerShape(20.dp))
+                .padding(8.dp)
+                .alpha(alphaMenu.value)
+        )
+        //stack layer 1
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .scale(scale.value - 0.08f)
+                .offset {
+                    IntOffset(
+                        transitionOffset.value.x.toInt() - 100,
+                        transitionOffset.value.y.toInt()
+                    )
+                }
+                .background(Color(0xFFF3F6FA).copy(.5f), shape = RoundedCornerShape(20.dp))
+                .padding(8.dp)
+                .alpha(alphaMenu.value)
+        )
+        // dashboard content
+        DashboardComponent(
+            Modifier
+                .fillMaxSize()
+                .scale(scale.value)
+                .offset {
+                    IntOffset(
+                        transitionOffset.value.x.toInt(),
+                        transitionOffset.value.y.toInt()
+                    )
+                }
+                .clip(shape = RoundedCornerShape(roundness.value))
+                .background(color = Color(0xFFebf2fa))
+        ) {
+            currentState = when (currentState) {
+                MenuState.EXPANDED -> MenuState.COLLAPSED
+                MenuState.COLLAPSED -> MenuState.EXPANDED
+            }
+        }
+    }
+}
+
+@Composable
+fun MenuComponent(modifier: Modifier, menuClose: () -> Unit) {
+
+    Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.Center) {
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(id = com.vikas.composeapp.R.drawable.profile_image),
+                contentDescription = "profile pic",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(shape = CircleShape)
+            )
+
+            Text(
+                text = "Sara",
+                fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
+                color = Color.White,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Icon(
+                painter = painterResource(id = com.vikas.shoeapp.R.drawable.ic_right_arrow),
+                contentDescription = "back",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable {
+                        menuClose()
+                    }
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        LazyColumn {
+
+            items(DashboardMenu.values()) {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 26.dp, bottom = 16.dp)
+                        .clickable {
+                            //TODO: handle menu click
+                        }
+                ) {
+                    Icon(
+                        painter = painterResource(id = it.icon),
+                        contentDescription = it.title,
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Text(
+                        text = it.title,
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(start = 16.dp),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        //settings
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
+                .clickable {
+                    //TODO: handle menu click
+                }
+        ) {
+            Icon(
+                painter = painterResource(id = com.vikas.shoeapp.R.drawable.ic_settings),
+                contentDescription = "Settings",
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Text(
+                text = "Settings",
+                color = Color.White,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(start = 16.dp),
+                fontWeight = FontWeight.Medium
+            )
+        }
+
+        //logout
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
+                .clickable {
+                    //TODO: handle menu click
+                }
+        ) {
+            Icon(
+                painter = painterResource(id = com.vikas.shoeapp.R.drawable.ic_logout),
+                contentDescription = "Logout",
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Text(
+                text = "Logout",
+                color = Color.White,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(start = 16.dp),
+                fontWeight = FontWeight.Medium
+            )
+        }
+
+        //app version
+        Text(
+            text = "App version: ${BuildConfig.VERSION_NAME}",
+            color = Color.White.copy(alpha = .4f),
+            fontSize = 16.sp,
+            modifier = Modifier.padding(start = 16.dp),
+            fontWeight = FontWeight.Medium,
+        )
+
+    }
+
+}
+
+
+@Composable
+@Preview(showBackground = true, showSystemUi = true)
+fun PreviewHomeComponent() {
+    HomeComponent()
+}
