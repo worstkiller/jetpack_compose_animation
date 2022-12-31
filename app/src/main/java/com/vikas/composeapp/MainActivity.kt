@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.vikas.composeapp.ui.HomeComponent
+import com.vikas.composeapp.ui.home.HomeComponent
 import com.vikas.composeapp.ui.theme.JetpackComposeAnimationPlaygroundTheme
 
 enum class MenuState {

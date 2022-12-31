@@ -1,4 +1,4 @@
-package com.vikas.composeapp.ui
+package com.vikas.composeapp.ui.home
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
@@ -15,11 +15,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.*
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -28,12 +32,18 @@ import androidx.compose.ui.unit.sp
 import com.vikas.composeapp.BuildConfig
 import com.vikas.composeapp.MenuState
 import com.vikas.composeapp.R
+import com.vikas.composeapp.ui.cart.CartComponent
 import com.vikas.composeapp.ui.dashboard.DashboardComponent
-import com.vikas.composeapp.ui.dashboard.DashboardMenu
+import com.vikas.composeapp.ui.favorite.FavoriteComponent
+import com.vikas.composeapp.ui.profile.ProfileComponent
+import com.vikas.composeapp.ui.settings.SettingsComponent
+import com.vikas.shoeapp.ui.theme.textColor
+import java.util.*
 import kotlin.math.roundToInt
 
 @Composable
 fun HomeComponent() {
+    var screen by remember { mutableStateOf(HomeMenu.HOME.name) }
     var currentState by remember { mutableStateOf(MenuState.COLLAPSED) }
     val updateAnim = updateTransition(currentState, label = "MenuState")
     val scale = updateAnim.animateFloat(
@@ -167,6 +177,20 @@ fun HomeComponent() {
                 }
                 .alpha(alphaMenu.value),
         ) {
+            when (it) {
+                is HomeMenuAction.MenuSelected -> {
+                    screen = it.menu.name
+                }
+                HomeMenuAction.SETTINGS -> {
+                    screen = "SETTINGS"
+                }
+                HomeMenuAction.LOGOUT -> {
+                    //do logout
+                }
+                else -> {
+                    currentState = MenuState.COLLAPSED
+                }
+            }
             currentState = MenuState.COLLAPSED
         }
 
@@ -181,7 +205,7 @@ fun HomeComponent() {
                         transitionOffset.value.y.toInt()
                     )
                 }
-                .background(Color(0xFFF3F6FA).copy(alpha = .95f), shape = RoundedCornerShape(20.dp))
+                .background(Color(0xFFF3F6FA).copy(alpha = .90f), shape = RoundedCornerShape(20.dp))
                 .padding(8.dp)
                 .alpha(alphaMenu.value)
         )
@@ -201,29 +225,77 @@ fun HomeComponent() {
                 .alpha(alphaMenu.value)
         )
         // dashboard content
-        DashboardComponent(
-            Modifier
-                .fillMaxSize()
-                .scale(scale.value)
-                .offset {
-                    IntOffset(
-                        transitionOffset.value.x.toInt(),
-                        transitionOffset.value.y.toInt()
-                    )
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .scale(scale.value)
+            .offset {
+                IntOffset(
+                    transitionOffset.value.x.toInt(),
+                    transitionOffset.value.y.toInt()
+                )
+            }
+            .clip(shape = RoundedCornerShape(roundness.value))
+            .background(color = Color(0xFFebf2fa))) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_menu),
+                    contentDescription = "Menu",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            currentState = when (currentState) {
+                                MenuState.EXPANDED -> MenuState.COLLAPSED
+                                MenuState.COLLAPSED -> MenuState.EXPANDED
+                            }
+                        },
+                    colorFilter = ColorFilter.tint(textColor)
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Text(
+                    text = screen,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = textColor
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .background(Color.LightGray)
+            )
+            when (screen) {
+                HomeMenu.HOME.name -> {
+                    DashboardComponent()
                 }
-                .clip(shape = RoundedCornerShape(roundness.value))
-                .background(color = Color(0xFFebf2fa))
-        ) {
-            currentState = when (currentState) {
-                MenuState.EXPANDED -> MenuState.COLLAPSED
-                MenuState.COLLAPSED -> MenuState.EXPANDED
+                HomeMenu.PROFILE.name -> {
+                    ProfileComponent()
+                }
+                HomeMenu.CART.name -> {
+                    CartComponent()
+                }
+                HomeMenu.FAVORITE.name -> {
+                    FavoriteComponent()
+                }
+                "SETTINGS" -> {
+                    SettingsComponent()
+                }
             }
         }
+
     }
 }
 
 @Composable
-fun MenuComponent(modifier: Modifier, menuClose: () -> Unit) {
+fun MenuComponent(modifier: Modifier, menuAction: (HomeMenuAction) -> Unit) {
 
     Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.Center) {
 
@@ -231,7 +303,7 @@ fun MenuComponent(modifier: Modifier, menuClose: () -> Unit) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
-                painter = painterResource(id = com.vikas.composeapp.R.drawable.profile_image),
+                painter = painterResource(id = R.drawable.profile_image),
                 contentDescription = "profile pic",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -248,31 +320,20 @@ fun MenuComponent(modifier: Modifier, menuClose: () -> Unit) {
             )
 
             Spacer(modifier = Modifier.weight(1f))
-
-            Icon(
-                painter = painterResource(id = com.vikas.shoeapp.R.drawable.ic_right_arrow),
-                contentDescription = "back",
-                tint = Color.White,
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable {
-                        menuClose()
-                    }
-            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
         LazyColumn {
 
-            items(DashboardMenu.values()) {
+            items(HomeMenu.values()) {
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(start = 16.dp, end = 16.dp, top = 26.dp, bottom = 16.dp)
                         .clickable {
-                            //TODO: handle menu click
+                            menuAction(HomeMenuAction.MenuSelected(it))
                         }
                 ) {
                     Icon(
@@ -304,7 +365,7 @@ fun MenuComponent(modifier: Modifier, menuClose: () -> Unit) {
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
                 .clickable {
-                    //TODO: handle menu click
+                    menuAction(HomeMenuAction.SETTINGS)
                 }
         ) {
             Icon(
@@ -331,7 +392,7 @@ fun MenuComponent(modifier: Modifier, menuClose: () -> Unit) {
             modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
                 .clickable {
-                    //TODO: handle menu click
+                    menuAction(HomeMenuAction.LOGOUT)
                 }
         ) {
             Icon(
