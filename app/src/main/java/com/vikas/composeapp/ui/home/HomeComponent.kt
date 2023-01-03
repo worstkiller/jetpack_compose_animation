@@ -35,6 +35,7 @@ import com.vikas.composeapp.R
 import com.vikas.composeapp.ui.cart.CartComponent
 import com.vikas.composeapp.ui.dashboard.DashboardComponent
 import com.vikas.composeapp.ui.favorite.FavoriteComponent
+import com.vikas.composeapp.ui.notifications.NotificationsComponent
 import com.vikas.composeapp.ui.profile.ProfileComponent
 import com.vikas.composeapp.ui.settings.SettingsComponent
 import com.vikas.shoeapp.ui.theme.textColor
@@ -284,6 +285,9 @@ fun HomeComponent() {
                 }
                 HomeMenu.FAVORITE.name -> {
                     FavoriteComponent()
+                }
+                HomeMenu.NOTIFICATION.name -> {
+                    NotificationsComponent()
                 }
                 "SETTINGS" -> {
                     SettingsComponent()
