@@ -8,7 +8,7 @@ Will be adding more in future with difference use cases.
 | Home | Details| Cart | 
 | --- | --- | --- | 
 |<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_101.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_102.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_106.png"/>|
-|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_104.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_105.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_103.png"/>|
+|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/features/project_config_change/screenshots/screenshot_107.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/features/project_config_change/screenshots/screenshot_108.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/features/project_config_change/screenshots/screenshot_109.gif"/>|
 
 ## Video
 [![Jetpack Compose Animation](https://user-images.githubusercontent.com/10533214/209778716-304f993a-6ed8-470f-8021-8df03ef526a9.png)](https://www.youtube.com/watch?v=DzO8KQGDmf8&ab_channel=vikaskumar "Jetpack Compose Animation")
