@@ -5,13 +5,13 @@ In one of the first we have created a simple Shoe app with three screens and add
 Will be adding more in future with difference use cases.
 
 ## Screenshots:
-| Home | Details| Cart | 
+| Screenshot 1 | Screenshot 2| Animation | 
 | --- | --- | --- | 
-|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_101.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_102.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_106.png"/>|
+|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_101.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/master/screenshots/screenshot_102.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/features/project_config_change/screenshots/screenshot_110.gif"/>|
 |<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/features/project_config_change/screenshots/screenshot_107.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/features/project_config_change/screenshots/screenshot_108.png"/>|<img src="https://github.com/worstkiller/jetpack_compose_animation/blob/features/project_config_change/screenshots/screenshot_109.gif"/>|
 
-## Video
-[![Jetpack Compose Animation](https://user-images.githubusercontent.com/10533214/209778716-304f993a-6ed8-470f-8021-8df03ef526a9.png)](https://www.youtube.com/watch?v=DzO8KQGDmf8&ab_channel=vikaskumar "Jetpack Compose Animation")
+## Youtube Videos of Animations
+[![Jetpack Compose Animation](https://user-images.githubusercontent.com/10533214/209778716-304f993a-6ed8-470f-8021-8df03ef526a9.png)](https://www.youtube.com/watch?v=yAdcbmfoa0c&list=PLLEubLrX7WKQsBBj77OHLZU32lVN0ggf_&ab_channel=vikaskumar "Jetpack Compose Animation")
 
 
 ## Prerequisites
@@ -46,6 +46,10 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 - [Twitter](https://twitter.com/vikaskum09)
 - [LinkedIn](https://www.linkedin.com/in/vikaskumar09)
+- [Youtube](https://youtube.com/@vikaskumar)
+
+## Support
+If this Project has helped you learnt something do consider star this repository and share with others 😊.
 
 ## License
 
