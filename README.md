@@ -53,4 +53,4 @@ If this Project has helped you learnt something do consider star this repository
 
 ## License
 
-This project is licensed under the [ MIT ] License.
+This project is licensed under the [ MIT ](https://github.com/worstkiller/jetpack_compose_animation/edit/master/LICENSE.md) License.
