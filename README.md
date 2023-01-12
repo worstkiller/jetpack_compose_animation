@@ -53,4 +53,4 @@ If this Project has helped you learnt something do consider star this repository
 
 ## License
 
-This project is licensed under the [ GNU General Public License (GPL)] License.
+This project is licensed under the [ MIT ] License.
