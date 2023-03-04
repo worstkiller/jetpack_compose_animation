@@ -37,17 +37,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vikas.foodorder.theme.JetpackComposeAnimationPlaygroundTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun AddToCartComponent(
     pizzaModel: PizzaDataModel,
     transitionAlpha: Float,
+    transitionSize: Float,
     onClick: () -> Unit
 ) {
 
     var alpha by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = pizzaModel) {
+        delay(200)
         alpha = true
     }
 
@@ -55,7 +58,8 @@ fun AddToCartComponent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .fillMaxHeight(transitionSize)
             .alpha(transitionAlpha)
     ) {
 
@@ -124,7 +128,7 @@ fun AddToCartComponent(
 @Composable
 fun Preview_AddToCartComponent() {
     JetpackComposeAnimationPlaygroundTheme {
-        AddToCartComponent(PizzaDataModel.list.first(), 1f) {
+        AddToCartComponent(PizzaDataModel.list.first(), 1f, 1f) {
 
         }
     }
