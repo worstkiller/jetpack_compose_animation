@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -38,8 +37,7 @@ import com.vikas.composeapp.ui.favorite.FavoriteComponent
 import com.vikas.composeapp.ui.notifications.NotificationsComponent
 import com.vikas.composeapp.ui.profile.ProfileComponent
 import com.vikas.composeapp.ui.settings.SettingsComponent
-import com.vikas.shoeapp.ui.theme.textColor
-import java.util.*
+import com.vikas.foodorder.theme.textColor
 import kotlin.math.roundToInt
 
 @Composable

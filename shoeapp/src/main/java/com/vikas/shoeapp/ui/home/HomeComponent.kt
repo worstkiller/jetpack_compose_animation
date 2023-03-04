@@ -228,22 +228,22 @@ fun ShoeItem(shoe: CarouselDataModel, pageOffset: Float, viewModel: MainViewMode
     )
     val boxAngle: Float by animateFloatAsState(
         targetValue = rotateY,
-        // Configure the animation duration and easing.
+
         animationSpec = tween(durationMillis = 600, easing = Utils.EaseOutQuart)
     )
     val boxScaleX: Float by animateFloatAsState(
         targetValue = scaleXBox,
-        // Configure the animation duration and easing.
+
         animationSpec = tween(durationMillis = 800, easing = Utils.EaseOutQuart)
     )
     val boxScaleY: Float by animateFloatAsState(
         targetValue = scaleYBox,
-        // Configure the animation duration and easing.
+
         animationSpec = tween(durationMillis = 800, easing = Utils.EaseOutQuart)
     )
     val imageAngle: Float by animateFloatAsState(
         targetValue = angle,
-        // Configure the animation duration and easing.
+
         animationSpec = tween(durationMillis = 600, easing = Utils.EaseOutQuart)
     )
     val visibility = Utils.lerp(
