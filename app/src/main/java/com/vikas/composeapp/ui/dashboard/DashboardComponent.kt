@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.vikas.foodorder.FoodAppMainActivity
 import com.vikas.shoeapp.MainActivity
 
 @Composable
@@ -36,6 +37,9 @@ fun DashboardComponent() {
                     when (it) {
                         DashboardOptions.SHOE_APP -> {
                             context.startActivity(MainActivity.getIntent(context))
+                        }
+                        DashboardOptions.FOOD_ORDER_APP -> {
+                            context.startActivity(FoodAppMainActivity.getIntent(context))
                         }
                         else -> {
                             Toast.makeText(context, "Coming Soon", Toast.LENGTH_SHORT).show()

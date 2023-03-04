@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "Jetpack Compose Animation Playground"
 include ':app'
 include ':shoeapp'
+include ':foodorder'
