@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -83,7 +85,7 @@ fun ProductCarouselItem(
             fraction = 1f - pageOffset.coerceIn(0f, 1f)
         ),
 
-        animationSpec = tween(durationMillis = 600, easing = Util.EaseOutQuart)
+        animationSpec = tween(durationMillis = 800, easing = Util.EaseOutQuart)
     )
 
     Column(
@@ -100,7 +102,8 @@ fun ProductCarouselItem(
                     rotationY = imageAngle
                     translationX = offsetX
                     translationY = offsetY
-                },
+                }
+                .shadow(8.dp, shape = CircleShape, spotColor = Color(0xFFE91E63)),
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.height(52.dp))

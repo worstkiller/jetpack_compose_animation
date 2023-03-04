@@ -1,9 +1,10 @@
 package com.vikas.foodorder
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,13 +18,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,24 +44,20 @@ fun AddToCartComponent(
     transitionAlpha: Float,
     onClick: () -> Unit
 ) {
-    Box(
+
+    var alpha by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = pizzaModel) {
+        alpha = true
+    }
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .alpha(transitionAlpha)
     ) {
-
-        Text(
-            text = "Back to Details",
-            color = Color.Gray,
-            fontWeight = FontWeight.SemiBold,
-            textDecoration = TextDecoration.Underline,
-            modifier = Modifier
-                .clickable {
-                    onClick()
-                }
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 50.dp),
-        )
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,7 +66,6 @@ fun AddToCartComponent(
                 .fillMaxHeight(.70f)
                 .padding(40.dp)
                 .background(shape = RoundedCornerShape(20.dp), color = Color.Black)
-                .align(alignment = Alignment.Center)
                 .clip(RoundedCornerShape(20.dp))
         ) {
 
@@ -87,12 +87,14 @@ fun AddToCartComponent(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Image(
-                painter = painterResource(id = R.drawable.ic_verified),
-                contentDescription = "check",
-                colorFilter = ColorFilter.tint(Color.Green.copy(alpha = .8f)),
-                modifier = Modifier.size(90.dp)
-            )
+            AnimatedVisibility(visible = alpha) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_verified),
+                    contentDescription = "check",
+                    colorFilter = ColorFilter.tint(Color.Green.copy(alpha = .8f)),
+                    modifier = Modifier.size(90.dp)
+                )
+            }
 
             Image(
                 painter = painterResource(id = pizzaModel.pizzaImage),
@@ -105,6 +107,16 @@ fun AddToCartComponent(
             )
 
         }
+        Text(
+            text = "Back to Details",
+            color = Color.Gray.copy(alpha = .8f),
+            fontWeight = FontWeight.SemiBold,
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier
+                .clickable {
+                    onClick()
+                },
+        )
     }
 }
 

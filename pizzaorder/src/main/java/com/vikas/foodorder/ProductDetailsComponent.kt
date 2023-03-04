@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -38,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -55,25 +55,34 @@ fun ProductDetailsComponent(list: List<PizzaDataModel> = PizzaDataModel.list) {
     val transition = updateTransition(currentState, label = "button state")
     val transitionAlpha by transition.animateFloat(
         transitionSpec = {
-            if (ButtonState.Details isTransitioningTo ButtonState.AddToCart) {
-                spring(stiffness = 300f, dampingRatio = 0.4f)
-            } else {
-                tween(durationMillis = 500)
-            }
+            spring(stiffness = 100f, dampingRatio = 0.5f)
         }, label = ""
     ) {
         if (it == ButtonState.AddToCart) 1f else 0f
     }
     val transitionAlphaButton by transition.animateFloat(
         transitionSpec = {
-            if (ButtonState.Details isTransitioningTo ButtonState.AddToCart) {
-                spring(stiffness = 300f, dampingRatio = 0.4f)
-            } else {
-                tween(durationMillis = 500)
-            }
+            spring(stiffness = 100f, dampingRatio = 0.5f)
         }, label = ""
     ) {
         if (it == ButtonState.Details) 1f else 0f
+    }
+
+    val transitionSize by transition.animateFloat(
+        transitionSpec = {
+            if (ButtonState.Details isTransitioningTo ButtonState.AddToCart) {
+                spring(stiffness = 100f, dampingRatio = 0.5f)
+            } else {
+                tween(durationMillis = 500)
+            }
+        },
+        label = ""
+    ) {
+        if (it == ButtonState.Details) {
+            1f
+        } else {
+            0f
+        }
     }
 
     var backgroundImage by remember { mutableStateOf(0) }
@@ -137,14 +146,15 @@ fun ProductDetailsComponent(list: List<PizzaDataModel> = PizzaDataModel.list) {
         when (currentState) {
             ButtonState.Details -> {
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(transitionAlphaButton),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     HorizontalPager(
                         count = list.size,
                         state = pagerState,
-                        modifier = Modifier.alpha(transitionAlphaButton)
                     ) { page ->
                         val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
                         ProductCarouselItem(list[page], pageOffset)
@@ -165,10 +175,13 @@ fun ProductDetailsComponent(list: List<PizzaDataModel> = PizzaDataModel.list) {
                     ) {
                         Text(text = "Add To Cart", modifier = Modifier.padding(8.dp))
                     }
+
                     Spacer(modifier = Modifier.height(16.dp))
+
                     Text(
                         text = "Swipe to see more",
                         color = Color.Gray.copy(alpha = .8f),
+                        fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
